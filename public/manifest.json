@@ -1,0 +1,15 @@
+{
+    "short_name": "FreshGRLC.net Web Wallet",
+    "name": "A web-based wallet for Allium-based cryptocurrencies",
+    "icons": [
+        {
+            "src": "favicon.png",
+            "sizes": "64x64",
+            "type": "image/png"
+        }
+    ],
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff"
+}
