@@ -4,6 +4,8 @@ import { IAddress, CoinTicker } from '../interfaces/IAddress.interface';
 
 import { Wallet } from '../contexts';
 
+import { AutoPaymentInfo, Table } from '../components';
+
 import classes from './Main.module.scss';
 
 
@@ -57,6 +59,18 @@ export const Main: React.FC = () => {
                                 <div>Pending: {address.pending}</div>
                             </div>
                         ))}
+                        <div>
+                            {wallet?.info?.autopayments[ticker as CoinTicker] && wallet.info.autopayments[ticker as CoinTicker].length > 0 ? (
+                                <>
+                                    <h4>Automatic payments</h4>
+                                    <Table>
+                                        {wallet.info.autopayments[ticker as CoinTicker].map((autopaymentConfig, index) => (
+                                            <AutoPaymentInfo id={index} key={index} addHeader={index === 0} autopaymentConfig={autopaymentConfig} deleteCallback={(key: number) => alert('Delete idx ' + key)} />
+                                        ))}
+                                    </Table>
+                                </>
+                            ) : (<></>)}
+                        </div>
                     </div>
                 );
             })}
