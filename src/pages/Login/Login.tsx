@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
 
-import { AuthenticationToken } from '../contexts/AuthenticationToken.context';
+import { AuthenticationToken } from '../../contexts/AuthenticationToken.context';
 
-import { loginUsingSecret, loginUsingSignedChallenge, getSignatureChallenge } from '../apis/login';
-import { IChallenge } from '../interfaces/IChallenge.interface';
+import { loginUsingSecret, loginUsingSignedChallenge, getSignatureChallenge } from '../../apis/login';
+import { IChallenge } from '../../interfaces/IChallenge.interface';
 
 export const Login: React.FC = () => {
     const tokenHolder = useContext(AuthenticationToken);

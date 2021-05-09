@@ -5,7 +5,10 @@ import { IWalletAPI, IWalletInfo } from './interfaces/IWallet.interface';
 import { AuthenticationToken } from './contexts/AuthenticationToken.context';
 import { Wallet } from './contexts/Wallet.context';
 
-import { Login, CreationPrompt, Main } from './pages';
+import { Login } from './pages/Login';
+import { CreationPrompt } from "./pages/CreationPrompt";
+import { Main } from "./pages/Main";
+
 import { Loading, LogoutBanner } from './components';
 
 import WalletAPI from './apis/wallet';

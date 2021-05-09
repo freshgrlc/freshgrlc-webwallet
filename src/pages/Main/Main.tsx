@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react';
 
-import { IAddress, CoinTicker } from '../interfaces/IAddress.interface';
+import { IAddress, CoinTicker } from '../../interfaces/IAddress.interface';
 
-import { Wallet } from '../contexts';
+import { Wallet } from '../../contexts';
 
-import { AutoPaymentInfo, Table } from '../components';
+import { AutoPaymentInfo, Table } from '../../components';
 
 import classes from './Main.module.scss';
 
@@ -52,7 +52,7 @@ export const Main: React.FC = () => {
                             <div>Pending: {coin[0].pending}</div>
                         </div>
                         {coin?.splice(1).map((address, index) =>(
-                            <div>
+                            <div key={address.address}>
                                 <hr />
                                 <h4>Alternative address: {address.address}</h4>
                                 <div>Balance: {address.balance}</div>

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 
-import { Wallet } from '../contexts/Wallet.context';
+import { Wallet } from '../../contexts/Wallet.context';
 
 
 export const CreationPrompt: React.FC = () => {
