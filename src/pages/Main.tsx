@@ -35,9 +35,9 @@ export const Main: React.FC = () => {
                 {Object.keys(coins).map((ticker, index) => (
                     <>
                         {ticker === selectedCoin ? (
-                            <span>{ticker}</span>
+                            <span key={ticker}>{ticker}</span>
                         ) : (
-                            <input type='button' value={ticker} onClick={e => setSelectedCoin(e.currentTarget.value as CoinTicker)} />
+                            <input key={ticker} type='button' value={ticker} onClick={e => setSelectedCoin(e.currentTarget.value as CoinTicker)} />
                         )}
                     </>
                 ))}
@@ -45,7 +45,7 @@ export const Main: React.FC = () => {
             {Object.keys(coins).filter(coin => coin === selectedCoin).map((ticker, index) => {
                 const coin = coins[ticker as CoinTicker];
                 return (
-                    <div key={index}>
+                    <div key={ticker}>
                         <div>
                             <h3>{coin[0].address}</h3>
                             <div>Balance: {coin[0].balance}</div>
