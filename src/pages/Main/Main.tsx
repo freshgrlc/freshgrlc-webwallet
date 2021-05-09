@@ -4,7 +4,8 @@ import { IAddress, CoinTicker } from '../../interfaces/IAddress.interface';
 
 import { Wallet } from '../../contexts';
 
-import { AutoPaymentInfo, Table } from '../../components';
+import {AutoPaymentInfo} from "../../components/AutoPayments";
+import {Table} from "../../components/Table";
 
 import classes from './Main.module.scss';
 

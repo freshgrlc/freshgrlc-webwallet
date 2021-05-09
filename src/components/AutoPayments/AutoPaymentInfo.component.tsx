@@ -1,8 +1,10 @@
 import React from 'react';
 
-import { IAutoPaymentConfig } from '../interfaces/IWallet.interface';
+import { IAutoPaymentConfig } from '../../interfaces/IWallet.interface';
 
-import { DateTime, Duration, TableHeaderRow, TableRow } from '.';
+import { DateTime } from "../DateTime";
+import { Duration } from "../Duration";
+import { TableHeaderRow, TableRow } from "../Table";
 
 import classes from './AutoPaymentInfo.module.scss';
 

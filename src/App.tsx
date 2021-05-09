@@ -9,7 +9,8 @@ import { Login } from './pages/Login';
 import { CreationPrompt } from "./pages/CreationPrompt";
 import { Main } from "./pages/Main";
 
-import { Loading, LogoutBanner } from './components';
+import {Loading} from "./components/Loading";
+import {LogoutBanner} from "./components/LogoutBanner";
 
 import WalletAPI from './apis/wallet';
 

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 
-import { AuthenticationToken } from '../contexts/AuthenticationToken.context';
+import { AuthenticationToken } from '../../contexts/AuthenticationToken.context';
 
 import classes from './LogoutBanner.module.scss';
 
