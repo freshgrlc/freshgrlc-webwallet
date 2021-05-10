@@ -1,1 +1,1 @@
-export * from "./AutoPaymentInfo.component"
+export * from './AutoPaymentInfo.component';

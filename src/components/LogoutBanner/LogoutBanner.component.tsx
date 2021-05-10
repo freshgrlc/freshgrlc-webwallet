@@ -9,7 +9,9 @@ export const LogoutBanner: React.FC = () => {
 
     return tokenHolder !== undefined ? (
         <div className={classes.logoutBanner}>
-            <input type='button' onClick={tokenHolder.clear} value='Logout' />
+            <input type="button" onClick={tokenHolder.clear} value="Logout" />
         </div>
-    ) : (<></>);
+    ) : (
+        <></>
+    );
 };

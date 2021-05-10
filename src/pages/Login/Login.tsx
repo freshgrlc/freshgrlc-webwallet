@@ -8,11 +8,11 @@ import { IChallenge } from '../../interfaces/IChallenge.interface';
 export const Login: React.FC = () => {
     const tokenHolder = useContext(AuthenticationToken);
 
-    const [ passphrase, setPassphrase ] = useState<string|undefined>();
-    const [ address, setAddress ] = useState<string|undefined>();
-    const [ challenge, setChallenge ] = useState<IChallenge|undefined>();
-    const [ signature, setSignature ] = useState<string|undefined>();
-    
+    const [passphrase, setPassphrase] = useState<string | undefined>();
+    const [address, setAddress] = useState<string | undefined>();
+    const [challenge, setChallenge] = useState<IChallenge | undefined>();
+    const [signature, setSignature] = useState<string | undefined>();
+
     const submitSecretLogin = () => {
         if (passphrase !== undefined)
             (async () => {
@@ -38,31 +38,49 @@ export const Login: React.FC = () => {
         <div>
             <div>Please login</div>
             <div>
-                <form action='' onSubmit={e => { submitSecretLogin(); e.preventDefault(); }}>
+                <form
+                    action=""
+                    onSubmit={(e) => {
+                        submitSecretLogin();
+                        e.preventDefault();
+                    }}
+                >
                     <div>
-                        <input onChange={e => setPassphrase(e.target.value)}></input>
-                        <input type='submit' value='Go' />
+                        <input onChange={(e) => setPassphrase(e.target.value)}></input>
+                        <input type="submit" value="Go" />
                     </div>
                 </form>
             </div>
             <div>Or login using an existing address</div>
             <div>
                 {challenge === undefined ? (
-                    <form action='' onSubmit={e => { submitAddressForChallenge(); e.preventDefault(); }}>
+                    <form
+                        action=""
+                        onSubmit={(e) => {
+                            submitAddressForChallenge();
+                            e.preventDefault();
+                        }}
+                    >
                         <div>
-                            <input onChange={e => setAddress(e.target.value)}></input>
-                            <input type='submit' value='Go' />
+                            <input onChange={(e) => setAddress(e.target.value)}></input>
+                            <input type="submit" value="Go" />
                         </div>
                     </form>
-                ):(
+                ) : (
                     <>
                         <div>Please sign the folliwing challenge</div>
                         <div>{challenge.challenge}</div>
                         <div>with address {address} in your wallet</div>
-                        <form action='' onSubmit={e => { submitSignatureLogin(); e.preventDefault(); }}>
+                        <form
+                            action=""
+                            onSubmit={(e) => {
+                                submitSignatureLogin();
+                                e.preventDefault();
+                            }}
+                        >
                             <div>
-                                <input onChange={e => setSignature(e.target.value)}></input>
-                                <input type='submit' value='Go' />
+                                <input onChange={(e) => setSignature(e.target.value)}></input>
+                                <input type="submit" value="Go" />
                             </div>
                         </form>
                     </>

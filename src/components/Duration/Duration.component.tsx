@@ -4,18 +4,17 @@ import classes from './Duration.module.scss';
 
 interface IProps {
     value: number;
-};
+}
 
 interface IDurationPart {
-    decriptor: string,
-    amount: number
-};
+    decriptor: string;
+    amount: number;
+}
 
-export const Duration: React.FC<IProps> = ({value}) => {
+export const Duration: React.FC<IProps> = ({ value }) => {
     let parts: IDurationPart[] = [];
 
-    let addToParts = (decriptor: string, amount: number) =>
-        parts.push({decriptor: decriptor, amount: amount});
+    let addToParts = (decriptor: string, amount: number) => parts.push({ decriptor: decriptor, amount: amount });
 
     if (value >= 31536000) {
         addToParts('year', value / 31536000);
@@ -40,7 +39,10 @@ export const Duration: React.FC<IProps> = ({value}) => {
     return (
         <div>
             {parts.map((part, index) => (
-                <>{part.amount} {part.decriptor}{part.amount === 1.0 ? '' : 's'}</>
+                <>
+                    {part.amount} {part.decriptor}
+                    {part.amount === 1.0 ? '' : 's'}
+                </>
             ))}
         </div>
     );

@@ -1,4 +1,4 @@
-export type CoinTicker = 'GRLC'|'tGRLC'|'TUX';
+export type CoinTicker = 'GRLC' | 'tGRLC' | 'TUX';
 
 export interface IAddress {
     address: string;

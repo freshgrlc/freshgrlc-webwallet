@@ -6,30 +6,27 @@ import { AuthenticationToken } from './contexts/AuthenticationToken.context';
 import { Wallet } from './contexts/Wallet.context';
 
 import { Login } from './pages/Login';
-import { CreationPrompt } from "./pages/CreationPrompt";
-import { Main } from "./pages/Main";
+import { CreationPrompt } from './pages/CreationPrompt';
+import { Main } from './pages/Main';
 
-import {Loading} from "./components/Loading";
-import {LogoutBanner} from "./components/LogoutBanner";
+import { Loading } from './components/Loading';
+import { LogoutBanner } from './components/LogoutBanner';
 
 import WalletAPI from './apis/wallet';
 
-
 export const App: React.FC = () => {
-    const [ authToken, setAuthToken ] = useState<string | undefined>(() => {
+    const [authToken, setAuthToken] = useState<string | undefined>(() => {
         const storedToken = localStorage.getItem('token');
         return storedToken !== null ? storedToken : undefined;
     });
 
-    const [ walletApi, setWalletApi ] = useState<IWalletAPI | undefined>();
-    const [ walletInfo, setWalletInfo ] = useState<IWalletInfo | undefined>();
-    const [ openingWallet, setWalletIsBeingOpened ] = useState<boolean>(false);
+    const [walletApi, setWalletApi] = useState<IWalletAPI | undefined>();
+    const [walletInfo, setWalletInfo] = useState<IWalletInfo | undefined>();
+    const [openingWallet, setWalletIsBeingOpened] = useState<boolean>(false);
 
     useEffect(() => {
-        authToken !== undefined ?
-            localStorage.setItem('token', authToken) :
-            localStorage.removeItem('token');
-    }, [ authToken ]);
+        authToken !== undefined ? localStorage.setItem('token', authToken) : localStorage.removeItem('token');
+    }, [authToken]);
 
     useEffect(() => {
         if (authToken !== undefined) {
@@ -40,7 +37,7 @@ export const App: React.FC = () => {
             setWalletIsBeingOpened(true);
             (async () => {
                 try {
-                    setWalletInfo(await wallet.info())
+                    setWalletInfo(await wallet.info());
                 } catch {
                     setAuthToken(undefined);
                     setWalletApi(undefined);
@@ -48,10 +45,10 @@ export const App: React.FC = () => {
                 setWalletIsBeingOpened(false);
             })();
         } else {
-            setWalletApi(undefined)
+            setWalletApi(undefined);
             setWalletInfo(undefined);
         }
-    }, [ authToken ]);
+    }, [authToken]);
 
     const createWallet = () => {
         (async () => {
@@ -66,20 +63,24 @@ export const App: React.FC = () => {
     };
 
     return (
-        <AuthenticationToken.Provider value={{token: authToken, update: setAuthToken, clear: () => setAuthToken(undefined)}}>
-            <Wallet.Provider value={{api: walletApi, info: walletInfo, exists: () => walletInfo !== undefined, create: createWallet, import: createWalletWithPrivateKey}}>
+        <AuthenticationToken.Provider
+            value={{ token: authToken, update: setAuthToken, clear: () => setAuthToken(undefined) }}
+        >
+            <Wallet.Provider
+                value={{
+                    api: walletApi,
+                    info: walletInfo,
+                    exists: () => walletInfo !== undefined,
+                    create: createWallet,
+                    import: createWalletWithPrivateKey,
+                }}
+            >
                 {authToken === undefined ? (
                     <Login />
                 ) : (
                     <>
                         <LogoutBanner />
-                        {openingWallet ? (
-                            <Loading />
-                        ) : walletInfo !== undefined ? (
-                            <Main />
-                        ) : (
-                            <CreationPrompt />
-                        )}
+                        {openingWallet ? <Loading /> : walletInfo !== undefined ? <Main /> : <CreationPrompt />}
                     </>
                 )}
             </Wallet.Provider>
