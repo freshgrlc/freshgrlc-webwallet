@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useHistory } from 'react-router';
 import useSWR from 'swr';
 import { info } from '../apis/wallet';
-import { AuthernticationError } from '../errors/AuthenticationError';
+import { AuthenticationError } from '../errors/AuthenticationError';
 import { RequestError } from '../errors/RequestError';
 import { WalletInfoNotFoundError } from '../errors/WalletInfoNotFoundError';
 import { IWalletInfo } from '../interfaces/IWallet';
@@ -18,7 +18,7 @@ export function useWalletInfo() {
             history.push('/creationprompt');
         }
 
-        if (error instanceof AuthernticationError) {
+        if (error instanceof AuthenticationError) {
             history.push('/login');
         }
     }, [error, history]);
