@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 
 import { IAddress, CoinTicker } from '../../interfaces/IAddress.interface';
 
-import { Wallet } from '../../contexts';
+import { Wallet } from '../../contexts/Wallet.context';
 
 import { AutoPaymentInfo } from '../../components/AutoPayments';
 import { Table } from '../../components/Table';
