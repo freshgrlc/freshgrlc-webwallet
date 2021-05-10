@@ -1,4 +1,5 @@
 import { createHash } from 'crypto';
+import { RequestError } from '../errors/RequestError';
 import { IChallenge } from '../interfaces/IToken';
 
 import { webwallet } from './endpoints';
@@ -41,7 +42,7 @@ export const getSignatureChallenge = async (address: string): Promise<IChallenge
         method: 'GET',
     });
 
-    if (!response.ok) throw new Error('Request failed: ' + response.statusText);
+    if (!response.ok) throw new RequestError(response);
 
     return response.json();
 };

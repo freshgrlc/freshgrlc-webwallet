@@ -9,7 +9,7 @@ import classes from './Main.module.scss';
 import { LogoutBanner } from '../../components/LogoutBanner';
 import { Loading } from '../../components/Loading';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
-import { Redirect, useHistory } from 'react-router';
+import { useHistory } from 'react-router';
 import { useQuery } from '../../hooks/useQuery';
 
 interface IAddressesByCoin {
@@ -23,7 +23,7 @@ function isOfTyoeCoinTicker(keyInput: string): keyInput is CoinTicker {
 }
 
 export const Main: React.FC = () => {
-    const { data: info, error: infoError } = useWalletInfo();
+    const { data: info } = useWalletInfo();
     const queryParams = useQuery();
     const history = useHistory();
 
@@ -48,10 +48,6 @@ export const Main: React.FC = () => {
         }
     }
 
-    if (infoError?.message === 'Wallet not found for those credentials') {
-        return <Redirect to="/creationprompt" push={true} />;
-    }
-
     if (!info) {
         return <Loading />;
     }
@@ -61,7 +57,7 @@ export const Main: React.FC = () => {
             <LogoutBanner></LogoutBanner>
             <div>
                 <div className={classes.header}>
-                    {Object.keys(coins).map((ticker, index) => (
+                    {Object.keys(coins).map((ticker) => (
                         <>
                             {ticker === selectedCoinTicker ? (
                                 <span key={ticker}>{ticker}</span>

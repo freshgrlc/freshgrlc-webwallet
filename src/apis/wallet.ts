@@ -1,3 +1,6 @@
+import { AuthernticationError } from '../errors/AuthenticationError';
+import { RequestError } from '../errors/RequestError';
+import { WalletInfoNotFoundError } from '../errors/WalletInfoNotFoundError';
 import { IWalletInfo } from '../interfaces/IWallet';
 import { webwallet } from './endpoints';
 
@@ -8,12 +11,17 @@ function getHeaders(token: string) {
     };
 }
 
-export function doRequest(endpoint: string, method: string, token: string, data?: object | null) {
-    return fetch(webwallet + endpoint, {
-        method: method,
-        headers: getHeaders(token),
-        body: data !== undefined ? JSON.stringify(data) : undefined,
-    });
+export async function doRequest(endpoint: string, method: string, token: string, data?: object | null) {
+    try {
+        return await fetch(webwallet + endpoint, {
+            method: method,
+            headers: getHeaders(token),
+            body: data !== undefined ? JSON.stringify(data) : undefined,
+        });
+    } catch (error) {
+        // this is wrong for so many reasons but i think there is something wrong with the server
+        throw new AuthernticationError(undefined!);
+    }
 }
 
 export function get(endpoint: string, token: string) {
@@ -26,11 +34,11 @@ function post(endpoint: string, token: string, data: object | null) {
 export async function create(token: string): Promise<IWalletInfo> {
     const response = await post('/', token, null);
 
-    if (response.status === 401) throw new Error('Not authenticated');
+    if (response.status === 401) throw new AuthernticationError(response);
 
-    if (!response.ok) throw new Error('Request failed: ' + response.statusText);
+    if (!response.ok) throw new RequestError(response);
 
-    return response.ok ? response.json() : undefined;
+    return response.json();
 }
 
 export async function importPrivateKey(privateKey: string, token: string): Promise<IWalletInfo> {
@@ -38,21 +46,21 @@ export async function importPrivateKey(privateKey: string, token: string): Promi
         privkey: privateKey,
     });
 
-    if (response.status === 401) throw new Error('Not authenticated');
+    if (response.status === 401) throw new AuthernticationError(response);
 
-    if (!response.ok) throw new Error('Request failed: ' + response.statusText);
+    if (!response.ok) throw new RequestError(response);
 
-    return response.ok ? response.json() : undefined;
+    return response.json();
 }
 
 export async function info(token: string): Promise<IWalletInfo> {
     const response = await get('/', token);
 
-    if (response.status === 401) throw new Error('Not authenticated');
+    if (response.status === 401) throw new AuthernticationError(response);
 
-    if (response.status === 404) throw new Error('Wallet not found for those credentials');
+    if (response.status === 404) throw new WalletInfoNotFoundError(response);
 
-    if (!response.ok) throw new Error('Request failed: ' + response.statusText);
+    if (!response.ok) throw new RequestError(response);
 
     return response.json();
 }
