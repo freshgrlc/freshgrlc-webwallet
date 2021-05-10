@@ -1,17 +1,14 @@
 import React, { useContext } from 'react';
-
-import { AuthenticationToken } from '../../contexts/AuthenticationToken.context';
+import { useTokenContext } from '../../contexts/AuthenticationToken.context';
 
 import classes from './LogoutBanner.module.scss';
 
 export const LogoutBanner: React.FC = () => {
-    const tokenHolder = useContext(AuthenticationToken);
+    const { clear } = useTokenContext();
 
-    return tokenHolder !== undefined ? (
+    return (
         <div className={classes.logoutBanner}>
-            <input type="button" onClick={tokenHolder.clear} value="Logout" />
+            <input type="button" onClick={clear} value="Logout" />
         </div>
-    ) : (
-        <></>
     );
 };

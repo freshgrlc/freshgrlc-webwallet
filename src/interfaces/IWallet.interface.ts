@@ -25,19 +25,3 @@ export interface IWalletInfo {
     addresses: IAddress[];
     autopayments: IAutoPaymentConfigs;
 }
-
-export interface IWalletAPI {
-    create: () => Promise<IWalletInfo>;
-    importPrivateKey: (privateKey: string) => Promise<IWalletInfo>;
-    info: () => Promise<IWalletInfo | undefined>;
-}
-
-export interface IWallet {
-    api?: IWalletAPI;
-    info?: IWalletInfo;
-    exists: () => boolean;
-    create: () => void;
-    import: (privateKey: string) => void;
-}
-
-export default IWallet;

@@ -1,13 +1,13 @@
 import { createHash } from 'crypto';
 
-import endpoints from './endpoints';
+import { webwallet } from './endpoints';
 
 import { IChallenge } from '../interfaces/IChallenge.interface';
 
 export const loginUsingSecret = async (passphrase: string): Promise<string | undefined> => {
     const hash = createHash('sha256').update(createHash('sha256').update(passphrase).digest()).digest('hex');
 
-    const response = await fetch(endpoints.webwallet + '/login/secrethash/', {
+    const response = await fetch(webwallet + '/login/secrethash/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(hash),
@@ -20,7 +20,7 @@ export const loginUsingSignedChallenge = async (
     challenge: IChallenge,
     signature: string
 ): Promise<string | undefined> => {
-    const response = await fetch(endpoints.webwallet + '/login/address/', {
+    const response = await fetch(webwallet + '/login/address/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export const loginUsingSignedChallenge = async (
 };
 
 export const getSignatureChallenge = async (address: string): Promise<IChallenge> => {
-    const url = new URL(endpoints.webwallet + '/challenge/');
+    const url = new URL(webwallet + '/challenge/');
 
     url.searchParams.append('type', 'signatureauth');
     url.searchParams.append('address', address);

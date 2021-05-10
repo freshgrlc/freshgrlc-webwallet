@@ -1,37 +1,43 @@
-import React, { useState, useContext } from 'react';
-
-import { AuthenticationToken } from '../../contexts/AuthenticationToken.context';
+import React, { useState } from 'react';
 
 import { loginUsingSecret, loginUsingSignedChallenge, getSignatureChallenge } from '../../apis/login';
 import { IChallenge } from '../../interfaces/IChallenge.interface';
+import { useHistory } from 'react-router-dom';
+import { useTokenContext } from '../../contexts/AuthenticationToken.context';
 
 export const Login: React.FC = () => {
-    const tokenHolder = useContext(AuthenticationToken);
+    const { update } = useTokenContext();
+    const history = useHistory();
 
     const [passphrase, setPassphrase] = useState<string | undefined>();
     const [address, setAddress] = useState<string | undefined>();
     const [challenge, setChallenge] = useState<IChallenge | undefined>();
     const [signature, setSignature] = useState<string | undefined>();
 
-    const submitSecretLogin = () => {
-        if (passphrase !== undefined)
-            (async () => {
-                tokenHolder?.update(await loginUsingSecret(passphrase));
-            })();
+    const submitSecretLogin = async () => {
+        if (passphrase !== undefined) {
+            const token = await loginUsingSecret(passphrase);
+            if (token !== undefined) {
+                update(token);
+                history.push('/');
+            }
+        }
     };
 
-    const submitSignatureLogin = () => {
-        if (signature !== undefined)
-            (async () => {
-                tokenHolder?.update(await loginUsingSignedChallenge(challenge as IChallenge, signature as string));
-            })();
+    const submitSignatureLogin = async () => {
+        if (signature !== undefined && challenge !== undefined) {
+            const token = await loginUsingSignedChallenge(challenge, signature);
+            if (token !== undefined) {
+                update(token);
+                history.push('/');
+            }
+        }
     };
 
-    const submitAddressForChallenge = () => {
-        if (address !== undefined)
-            (async () => {
-                setChallenge(await getSignatureChallenge(address));
-            })();
+    const submitAddressForChallenge = async () => {
+        if (address !== undefined) {
+            setChallenge(await getSignatureChallenge(address));
+        }
     };
 
     return (

@@ -1,5 +1,5 @@
 export interface IAuthenticationToken {
     token?: string;
-    update: (arg0?: string) => any;
+    update: (token: string) => any;
     clear: () => void;
 }
