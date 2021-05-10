@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { IAddress, CoinTicker } from '../../interfaces/IAddress';
 
@@ -9,7 +9,8 @@ import classes from './Main.module.scss';
 import { LogoutBanner } from '../../components/LogoutBanner';
 import { Loading } from '../../components/Loading';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
-import { Redirect } from 'react-router';
+import { Redirect, useHistory } from 'react-router';
+import { useQuery } from '../../hooks/useQuery';
 
 interface IAddressesByCoin {
     GRLC: IAddress[];
@@ -17,10 +18,28 @@ interface IAddressesByCoin {
     TUX: IAddress[];
 }
 
+function isOfTyoeCoinTicker(keyInput: string): keyInput is CoinTicker {
+    return ['GRLC', 'tGRLC', 'TUX'].includes(keyInput);
+}
+
 export const Main: React.FC = () => {
     const { data: info, error: infoError } = useWalletInfo();
+    const queryParams = useQuery();
+    const history = useHistory();
 
-    const [selectedCoin, setSelectedCoin] = useState<CoinTicker>('GRLC');
+    const [selectedCoinTicker, setSelectedCoinTicker] = useState<CoinTicker>(() => {
+        const ticker = queryParams.get('ticker');
+        if (ticker != null && isOfTyoeCoinTicker(ticker)) {
+            return ticker;
+        }
+        return 'GRLC';
+    });
+
+    useEffect(() => {
+        if (queryParams.get('ticker') !== selectedCoinTicker) {
+            history.replace(`/?ticker=${selectedCoinTicker}`);
+        }
+    }, [selectedCoinTicker, history, queryParams]);
 
     const coins: IAddressesByCoin = { GRLC: [], tGRLC: [], TUX: [] };
     if (info?.addresses) {
@@ -44,21 +63,21 @@ export const Main: React.FC = () => {
                 <div className={classes.header}>
                     {Object.keys(coins).map((ticker, index) => (
                         <>
-                            {ticker === selectedCoin ? (
+                            {ticker === selectedCoinTicker ? (
                                 <span key={ticker}>{ticker}</span>
                             ) : (
                                 <input
                                     key={ticker}
                                     type="button"
                                     value={ticker}
-                                    onClick={(e) => setSelectedCoin(e.currentTarget.value as CoinTicker)}
+                                    onClick={(e) => setSelectedCoinTicker(e.currentTarget.value as CoinTicker)}
                                 />
                             )}
                         </>
                     ))}
                 </div>
                 {Object.keys(coins)
-                    .filter((coin) => coin === selectedCoin)
+                    .filter((coin) => coin === selectedCoinTicker)
                     .map((ticker, index) => {
                         const coin = coins[ticker as CoinTicker];
                         return (
