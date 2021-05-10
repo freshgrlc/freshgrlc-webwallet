@@ -1,4 +1,4 @@
-import { IAddress } from './IAddress.interface';
+import { IAddress } from './IAddress';
 
 export type AutoPaymentType = 'standard' | 'zero-balance';
 

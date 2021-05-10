@@ -3,3 +3,8 @@ export interface ITokenContext {
     update: (token: string) => any;
     clear: () => void;
 }
+
+export interface IChallenge {
+    challenge: string;
+    authtoken: string;
+}

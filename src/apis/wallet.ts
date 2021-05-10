@@ -1,4 +1,4 @@
-import { IWalletInfo } from '../interfaces/IWallet.interface';
+import { IWalletInfo } from '../interfaces/IWallet';
 import { webwallet } from './endpoints';
 
 function getHeaders(token: string) {

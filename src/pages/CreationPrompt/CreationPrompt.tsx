@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router';
+import { Redirect, useHistory } from 'react-router';
 import { create, importPrivateKey } from '../../apis/wallet';
 import { LogoutBanner } from '../../components/LogoutBanner';
 import { useProtected } from '../../hooks/useProtected';

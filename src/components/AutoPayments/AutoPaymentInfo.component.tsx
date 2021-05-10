@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IAutoPaymentConfig } from '../../interfaces/IWallet.interface';
+import { IAutoPaymentConfig } from '../../interfaces/IWallet';
 
 import { DateTime } from '../DateTime';
 import { Duration } from '../Duration';

@@ -1,8 +1,7 @@
 import { createHash } from 'crypto';
+import { IChallenge } from '../interfaces/IToken';
 
 import { webwallet } from './endpoints';
-
-import { IChallenge } from '../interfaces/IChallenge.interface';
 
 export const loginUsingSecret = async (passphrase: string): Promise<string | undefined> => {
     const hash = createHash('sha256').update(createHash('sha256').update(passphrase).digest()).digest('hex');

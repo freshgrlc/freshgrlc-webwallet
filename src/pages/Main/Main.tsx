@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { IAddress, CoinTicker } from '../../interfaces/IAddress.interface';
+import { IAddress, CoinTicker } from '../../interfaces/IAddress';
 
 import { AutoPaymentInfo } from '../../components/AutoPayments';
 import { Table } from '../../components/Table';

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 
-import { ITokenContext } from '../interfaces/IToken.interface';
+import { ITokenContext } from '../interfaces/IToken';
 
 const LOCAL_STORAGE_KEY = 'token';
 
