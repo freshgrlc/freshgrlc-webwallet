@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import { Login } from './pages/Login';
 import { Main } from './pages/Main';
-import { TokenProvider } from './contexts/AuthenticationToken.context';
+import { TokenProvider } from './contexts/Token.context';
 import { CreationPrompt } from './pages/CreationPrompt';
 
 export const App: React.FC = () => {

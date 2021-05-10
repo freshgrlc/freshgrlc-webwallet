@@ -1,24 +1,26 @@
 import React, { useContext, useEffect, useState } from 'react';
 
-import { IAuthenticationToken } from '../interfaces/IAuthenticationToken.interface';
+import { ITokenContext } from '../interfaces/IToken.interface';
 
-const TokenContext = React.createContext<IAuthenticationToken>(undefined!);
+const LOCAL_STORAGE_KEY = 'token';
+
+const TokenContext = React.createContext<ITokenContext>(undefined!);
 
 function useAuth() {
     const [token, setToken] = useState<string | undefined>(() => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem(LOCAL_STORAGE_KEY);
         return token !== null ? token : undefined;
     });
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem(LOCAL_STORAGE_KEY);
         setToken(token !== null ? token : undefined);
     }, [token]);
 
     const update = (ntoken?: string) => {
         if (ntoken !== undefined) {
-            localStorage.setItem('token', ntoken);
+            localStorage.setItem(LOCAL_STORAGE_KEY, ntoken);
         } else {
-            localStorage.removeItem('token');
+            localStorage.removeItem(LOCAL_STORAGE_KEY);
         }
         setToken(ntoken);
     };

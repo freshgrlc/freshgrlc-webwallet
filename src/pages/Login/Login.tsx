@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { loginUsingSecret, loginUsingSignedChallenge, getSignatureChallenge } from '../../apis/login';
 import { IChallenge } from '../../interfaces/IChallenge.interface';
 import { useHistory } from 'react-router-dom';
-import { useTokenContext } from '../../contexts/AuthenticationToken.context';
+import { useTokenContext } from '../../contexts/Token.context';
 
 export const Login: React.FC = () => {
     const { update } = useTokenContext();
