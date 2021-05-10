@@ -10,7 +10,7 @@ export const CreationPrompt: React.FC = () => {
     const history = useHistory();
 
     const { token } = useProtected();
-    const { mutate } = useWalletInfo();
+    const { data, mutate } = useWalletInfo();
 
     const createWallet = async () => {
         mutate(await create(token));
@@ -20,6 +20,10 @@ export const CreationPrompt: React.FC = () => {
         mutate(await importPrivateKey(privateKey, token));
         history.replace('/');
     };
+
+    if (data != null) {
+        return <Redirect to="/" push={false} />;
+    }
 
     return (
         <>
