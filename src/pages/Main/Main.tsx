@@ -21,15 +21,15 @@ export const Main: React.FC = () => {
     const { data: info } = useWalletInfo();
     const { selectedCoinTicker, setSelectedCoinTicker } = useSelectedCoinTicker();
 
-    const coins: IAddressesByCoin = { GRLC: [], tGRLC: [], TUX: [] };
-    if (info?.addresses) {
-        for (const address of info?.addresses) {
-            coins[address.coin].push(address);
-        }
-    }
-
     if (!info) {
         return <Loading />;
+    }
+
+    const coins: IAddressesByCoin = { GRLC: [], tGRLC: [], TUX: [] };
+    if (info.addresses) {
+        for (const address of info.addresses) {
+            coins[address.coin].push(address);
+        }
     }
 
     return (
