@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { IAutoPaymentConfig } from '../../interfaces/IWallet';
+import { IAutoPaymentConfig, IAutoPaymentTransactionConfig } from '../../interfaces/IWallet';
+import { Copyable } from '../Copyable';
 
 import { DateTime } from '../DateTime';
 import { Duration } from '../Duration';
@@ -8,54 +9,61 @@ import { TableHeaderRow, TableRow } from '../Table';
 
 import classes from './AutoPaymentInfo.module.scss';
 
-interface IProps {
-    autopaymentConfig: IAutoPaymentConfig;
-    addHeader?: boolean;
-    id?: number | string;
-    deleteCallback?: any;
-}
-
 type TransactionType = 'standard' | 'everything' | 'keep-amount';
 
-export const AutoPaymentInfo: React.FC<IProps> = ({ autopaymentConfig, addHeader, id, deleteCallback }) => {
-    const type: TransactionType =
+interface AutoPaymentTransactionProps {
+    transactionType: TransactionType;
+    transaction: IAutoPaymentTransactionConfig;
+}
+
+interface AutoPaymentHeaderRowProps {
+    showDelete?: boolean;
+}
+
+interface AutoPaymentInfoRowProps {
+    autopaymentConfig: IAutoPaymentConfig;
+    id?: number | string;
+    deleteCallback?: () => any;
+}
+
+const AutoPaymentTransactionAmount: React.FC<AutoPaymentTransactionProps> = ({ transactionType, transaction }) => {
+    if (transactionType === 'everything') {
+        return <div>Transfer everything</div>;
+    } else if (transactionType === 'keep-amount') {
+        return <div>{'Transfer exactly ' + transaction.amount}</div>;
+    } else {
+        return <div>{'Transfer everything but ' + transaction.amountToKeep}</div>;
+    }
+};
+
+export const AutoPaymentHeaderRow: React.FC<AutoPaymentHeaderRowProps> = ({ showDelete }) => {
+    return (
+        <TableHeaderRow>
+            <div>Next scheduled payment</div>
+            <div>Type / Amount</div>
+            <div>Destination</div>
+            <div>Interval</div>
+            {showDelete && <div>Delete</div>}
+        </TableHeaderRow>
+    );
+};
+
+export const AutoPaymentInfoRow: React.FC<AutoPaymentInfoRowProps> = ({ autopaymentConfig, deleteCallback }) => {
+    const transactionType: TransactionType =
         autopaymentConfig.transaction.type === 'standard'
             ? 'standard'
-            : autopaymentConfig.transaction.amountToKeep && autopaymentConfig.transaction.amountToKeep > 0.0
+            : (autopaymentConfig.transaction.amountToKeep ?? 0.0) > 0.0
             ? 'keep-amount'
             : 'everything';
     return (
-        <>
-            {addHeader ? (
-                <TableHeaderRow>
-                    <div>Next scheduled payment</div>
-                    <div>Type / Amount</div>
-                    <div>Destination</div>
-                    <div>Interval</div>
-                    {deleteCallback !== undefined ? <div>Delete</div> : <></>}
-                </TableHeaderRow>
-            ) : (
-                <></>
-            )}
-            <TableRow>
-                <DateTime timestamp={autopaymentConfig.nextpayment} />
-                {type === 'everything' ? (
-                    <div>Transfer everything</div>
-                ) : type === 'standard' ? (
-                    <div>{'Transfer exactly ' + autopaymentConfig.transaction.amount}</div>
-                ) : (
-                    <div>{'Transfer everything but ' + autopaymentConfig.transaction.amountToKeep}</div>
-                )}
-                <div>{autopaymentConfig.address}</div>
-                <Duration value={autopaymentConfig.interval} />
-                {deleteCallback !== undefined ? (
-                    <div>
-                        <input type="button" value="Delete" onClick={() => deleteCallback(id)} />
-                    </div>
-                ) : (
-                    <></>
-                )}
-            </TableRow>
-        </>
+        <TableRow>
+            <DateTime timestamp={autopaymentConfig.nextpayment} />
+            <AutoPaymentTransactionAmount {...{ transactionType, transaction: autopaymentConfig.transaction }} />
+            <div>
+                <Copyable text={autopaymentConfig.address} />
+            </div>
+            <Duration value={autopaymentConfig.interval} />
+            {deleteCallback != null && <button onClick={deleteCallback}>Delete</button>}
+        </TableRow>
     );
 };
