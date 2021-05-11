@@ -1,1 +1,1 @@
-export * from './LogoutBanner.component';
+export * from './LogoutBanner';

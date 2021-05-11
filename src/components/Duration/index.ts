@@ -1,1 +1,1 @@
-export * from './Duration.component';
+export * from './Duration';
