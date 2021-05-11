@@ -21,7 +21,7 @@ interface AutoPaymentHeaderRowProps {
 }
 
 interface AutoPaymentInfoRowProps {
-    autopaymentConfig: IAutoPaymentConfig;
+    autoPaymentConfig: IAutoPaymentConfig;
     id?: number | string;
     deleteCallback?: () => any;
 }
@@ -48,21 +48,21 @@ export const AutoPaymentHeaderRow: React.FC<AutoPaymentHeaderRowProps> = ({ show
     );
 };
 
-export const AutoPaymentInfoRow: React.FC<AutoPaymentInfoRowProps> = ({ autopaymentConfig, deleteCallback }) => {
+export const AutoPaymentInfoRow: React.FC<AutoPaymentInfoRowProps> = ({ autoPaymentConfig, deleteCallback }) => {
     const transactionType: TransactionType =
-        autopaymentConfig.transaction.type === 'standard'
+        autoPaymentConfig.transaction.type === 'standard'
             ? 'standard'
-            : (autopaymentConfig.transaction.amountToKeep ?? 0.0) > 0.0
+            : (autoPaymentConfig.transaction.amountToKeep ?? 0.0) > 0.0
             ? 'keep-amount'
             : 'everything';
     return (
         <TableRow>
-            <DateTime timestamp={autopaymentConfig.nextpayment} />
-            <AutoPaymentTransactionAmount {...{ transactionType, transaction: autopaymentConfig.transaction }} />
+            <DateTime timestamp={autoPaymentConfig.nextpayment} />
+            <AutoPaymentTransactionAmount {...{ transactionType, transaction: autoPaymentConfig.transaction }} />
             <div>
-                <Copyable text={autopaymentConfig.address} />
+                <Copyable text={autoPaymentConfig.address} />
             </div>
-            <Duration value={autopaymentConfig.interval} />
+            <Duration value={autoPaymentConfig.interval} />
             {deleteCallback != null && <button onClick={deleteCallback}>Delete</button>}
         </TableRow>
     );
