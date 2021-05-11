@@ -1,5 +1,6 @@
 import React from 'react';
 import { IAddress } from '../../interfaces/IAddress';
+import { Copyable } from '../Copyable';
 
 interface Props {
     addresses: IAddress[];
@@ -11,13 +12,15 @@ export const Addresses: React.FC<Props> = ({ addresses }) => {
             {addresses.map(({ address, balance, pending }, index) => (
                 <div key={address}>
                     {index === 0 ? (
-                        <h1>{address}</h1>
+                        <h1>
+                            <Copyable text={address} />
+                        </h1>
                     ) : (
                         <>
                             <hr />
                             <h3>
                                 <span>Alternate Address: </span>
-                                <span>{address}</span>
+                                <Copyable text={address} />
                             </h3>
                         </>
                     )}
