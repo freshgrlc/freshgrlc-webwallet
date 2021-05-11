@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { IAddress, CoinTicker } from '../../interfaces/IAddress';
 
@@ -9,8 +9,7 @@ import classes from './Main.module.scss';
 import { LogoutBanner } from '../../components/LogoutBanner';
 import { Loading } from '../../components/Loading';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
-import { useHistory } from 'react-router';
-import { useQuery } from '../../hooks/useQuery';
+import { useSelectedCoinTicker } from '../../hooks/useSelectedCoinTicker';
 
 interface IAddressesByCoin {
     GRLC: IAddress[];
@@ -18,28 +17,9 @@ interface IAddressesByCoin {
     TUX: IAddress[];
 }
 
-function isOfTyoeCoinTicker(keyInput: string): keyInput is CoinTicker {
-    return ['GRLC', 'tGRLC', 'TUX'].includes(keyInput);
-}
-
 export const Main: React.FC = () => {
     const { data: info } = useWalletInfo();
-    const queryParams = useQuery();
-    const history = useHistory();
-
-    const [selectedCoinTicker, setSelectedCoinTicker] = useState<CoinTicker>(() => {
-        const ticker = queryParams.get('ticker');
-        if (ticker != null && isOfTyoeCoinTicker(ticker)) {
-            return ticker;
-        }
-        return 'GRLC';
-    });
-
-    useEffect(() => {
-        if (queryParams.get('ticker') !== selectedCoinTicker) {
-            history.replace(`/?ticker=${selectedCoinTicker}`);
-        }
-    }, [selectedCoinTicker, history, queryParams]);
+    const { selectedCoinTicker, setSelectedCoinTicker } = useSelectedCoinTicker();
 
     const coins: IAddressesByCoin = { GRLC: [], tGRLC: [], TUX: [] };
     if (info?.addresses) {
