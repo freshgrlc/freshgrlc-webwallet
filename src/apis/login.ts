@@ -1,7 +1,6 @@
 import { createHash } from 'crypto';
 import { RequestError } from '../errors/RequestError';
 import { IChallenge } from '../interfaces/IToken';
-
 import { webwallet } from './endpoints';
 
 export const loginUsingSecret = async (passphrase: string): Promise<string | undefined> => {
