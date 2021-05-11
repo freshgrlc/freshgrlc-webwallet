@@ -1,8 +1,6 @@
 import React from 'react';
 
-import classes from './Duration.module.scss';
-
-interface IProps {
+interface Props {
     value: number;
 }
 
@@ -11,7 +9,7 @@ interface IDurationPart {
     amount: number;
 }
 
-export const Duration: React.FC<IProps> = ({ value }) => {
+export const Duration: React.FC<Props> = ({ value }) => {
     let parts: IDurationPart[] = [];
 
     let addToParts = (decriptor: string, amount: number) => parts.push({ decriptor: decriptor, amount: amount });

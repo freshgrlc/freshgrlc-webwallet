@@ -7,8 +7,6 @@ import { DateTime } from '../DateTime';
 import { Duration } from '../Duration';
 import { TableHeaderRow, TableRow } from '../Table';
 
-import classes from './AutoPaymentInfo.module.scss';
-
 type TransactionType = 'standard' | 'everything' | 'keep-amount';
 
 interface AutoPaymentTransactionProps {
