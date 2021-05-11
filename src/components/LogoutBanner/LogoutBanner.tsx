@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useTokenContext } from '../../contexts/Token.context';
 
 import classes from './LogoutBanner.module.scss';

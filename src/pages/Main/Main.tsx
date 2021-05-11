@@ -1,7 +1,5 @@
 import React from 'react';
 
-import classes from './Main.module.scss';
-
 import { LogoutBanner } from '../../components/LogoutBanner';
 import { Loading } from '../../components/Loading';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
