@@ -19,8 +19,8 @@ export async function doRequest(endpoint: string, method: string, token: string,
             body: data !== undefined ? JSON.stringify(data) : undefined,
         });
     } catch (error) {
-        // this is wrong for so many reasons but i think there is something wrong with the server
-        throw new AuthenticationError(undefined!);
+        // this is an abuse and kind of lies to swr later
+        throw new Error('Unhandeled fetch error: ' + error);
     }
 }
 
@@ -59,6 +59,24 @@ export async function info(token: string): Promise<IWalletInfo> {
     if (response.status === 401) throw new AuthenticationError(response);
 
     if (response.status === 404) throw new WalletInfoNotFoundError(response);
+
+    if (!response.ok) throw new RequestError(response);
+
+    return response.json();
+}
+
+export async function send(destinaiton: string, amount: number, ticker: string, token: string) {
+    const response = await post('/send/', token, {
+        amount,
+        destination: {
+            address: destinaiton,
+            type: 'address',
+        },
+        coin: ticker.toLowerCase(),
+        priority: 'normal',
+    });
+
+    if (response.status === 401) throw new AuthenticationError(response);
 
     if (!response.ok) throw new RequestError(response);
 

@@ -8,6 +8,7 @@ import { CoinSelection } from '../../components/CoinSelection';
 import { Addresses } from '../../components/Adresses';
 import { Table } from '../../components/Table';
 import { AutoPaymentHeaderRow, AutoPaymentInfoRow } from '../../components/AutoPayments';
+import { Send } from '../../components/Send';
 
 export const Main: React.FC = () => {
     const { data: info } = useWalletInfo();
@@ -25,6 +26,7 @@ export const Main: React.FC = () => {
             <LogoutBanner></LogoutBanner>
             <CoinSelection {...{ selectedCoinTicker, setSelectedCoinTicker, tickers: ['GRLC', 'tGRLC', 'TUX'] }} />
             <Addresses addresses={addresses} />
+            <Send selectedCoinTicker={selectedCoinTicker} />
             {autoPayments.length > 0 && (
                 <Table>
                     <AutoPaymentHeaderRow />

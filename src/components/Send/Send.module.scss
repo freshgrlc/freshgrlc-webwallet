@@ -1,0 +1,18 @@
+.form {
+    display: flex;
+    flex-flow: column;
+    width: 500px;
+}
+
+.row {
+    display: flex;
+    flex-flow: row;
+}
+
+.reversed {
+    flex-direction: row-reverse;
+}
+
+.button {
+    flex: 1;
+}
