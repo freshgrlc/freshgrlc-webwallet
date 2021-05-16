@@ -24,11 +24,11 @@ export async function doRequest(endpoint: string, method: string, token: string,
     }
 }
 
-export function get(endpoint: string, token: string) {
-    return doRequest(endpoint, 'GET', token, undefined);
+export async function get(endpoint: string, token: string) {
+    return await doRequest(endpoint, 'GET', token, undefined);
 }
-function post(endpoint: string, token: string, data: object | null) {
-    return doRequest(endpoint, 'POST', token, data);
+export async function post(endpoint: string, token: string, data: object | null) {
+    return await doRequest(endpoint, 'POST', token, data);
 }
 
 export async function create(token: string): Promise<IWalletInfo> {
@@ -38,7 +38,7 @@ export async function create(token: string): Promise<IWalletInfo> {
 
     if (!response.ok) throw new RequestError(response);
 
-    return response.json();
+    return await response.json();
 }
 
 export async function importPrivateKey(privateKey: string, token: string): Promise<IWalletInfo> {
@@ -50,7 +50,7 @@ export async function importPrivateKey(privateKey: string, token: string): Promi
 
     if (!response.ok) throw new RequestError(response);
 
-    return response.json();
+    return await response.json();
 }
 
 export async function info(token: string): Promise<IWalletInfo> {
@@ -62,7 +62,7 @@ export async function info(token: string): Promise<IWalletInfo> {
 
     if (!response.ok) throw new RequestError(response);
 
-    return response.json();
+    return await response.json();
 }
 
 export async function send(destinaiton: string, amount: number, ticker: string, token: string) {
@@ -80,5 +80,5 @@ export async function send(destinaiton: string, amount: number, ticker: string, 
 
     if (!response.ok) throw new RequestError(response);
 
-    return response.json();
+    return await response.json();
 }
