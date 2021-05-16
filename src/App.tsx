@@ -23,7 +23,7 @@ const Main = lazyPage('Main');
 export const App: React.FC = () => {
     return (
         <TokenProvider>
-            <Suspense fallback={Loading}>
+            <Suspense fallback={<Loading />}>
                 <Router>
                     <Switch>
                         <Route path="/login">
