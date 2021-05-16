@@ -69,6 +69,7 @@ export const Send: React.FC<Props> = ({ selectedCoinTicker }) => {
                     // avoid uncontrolled input errors
                     // https://stackoverflow.com/a/64703656
                     value={amount !== undefined ? amount : ''}
+                    step={1e-8}
                     min={1e-8}
                 />
                 <div className={`${classes.row} ${classes.reversed}`}>
