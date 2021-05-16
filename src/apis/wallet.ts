@@ -72,7 +72,7 @@ export async function send(destinaiton: string, amount: number, ticker: string, 
             address: destinaiton,
             type: 'address',
         },
-        coin: ticker.toLowerCase(),
+        coin: ticker,
         priority: 'normal',
     });
 
