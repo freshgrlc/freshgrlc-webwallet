@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { ErrorMessage } from '@hookform/error-message';
+import React, { useEffect } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { send } from '../../apis/wallet';
 import { useCoinContext } from '../../contexts/Coin.context';
 import { useProtected } from '../../hooks/useProtected';
@@ -6,31 +8,32 @@ import { useTransactionHistory } from '../../hooks/useTransactionHistory';
 
 import classes from './Send.module.scss';
 
+interface IFormInput {
+    destination: string;
+    amount: number;
+}
+
 export const Send: React.FC = () => {
-    const [destination, setDestination] = useState('');
-    const [amount, setAmount] = useState<number | undefined>(undefined);
-    const [sending, setSending] = useState(false);
+    const {
+        handleSubmit,
+        reset,
+        register,
+        formState: { isSubmitting, errors, isDirty },
+    } = useForm();
     const { token } = useProtected();
     const { ticker } = useCoinContext();
     const { currentPage, nextPage } = useTransactionHistory();
 
     useEffect(() => {
-        clear();
-    }, [ticker]);
+        reset();
+    }, [ticker, reset]);
 
-    const clear = () => {
-        setDestination('');
-        setAmount(undefined);
-    };
-
-    const handleSend = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const onSubmit: SubmitHandler<IFormInput> = async ({ amount, destination }) => {
         if (amount === 0) {
             return;
         }
         const confirmationMessage = `Please confirm you intend to send ${amount} ${ticker} to ${destination} it cannot be undone.`;
         if (window.confirm(confirmationMessage)) {
-            setSending(true);
             // catch errors to make sure sending is always reset
             try {
                 // undefined override is fine here because field is marked as required on the form
@@ -38,52 +41,48 @@ export const Send: React.FC = () => {
                 await send(destination, amount!, ticker, token);
                 currentPage.revalidate();
                 nextPage.revalidate();
-                clear();
+                reset();
             } catch (error) {
                 console.error(error);
             }
-            setSending(false);
         }
     };
 
     return (
         <>
             <h2>Send</h2>
-            <form className={classes.form} onSubmit={handleSend}>
-                <label htmlFor="send-destination">Destination</label>
-                <input
-                    type="text"
-                    required={true}
-                    id="send-destination"
-                    placeholder={`Destination ${ticker} address`}
-                    disabled={sending}
-                    onChange={(e) => setDestination(e.target.value)}
-                    value={destination}
-                />
-                <label htmlFor="send-amount">Amount</label>
-                <input
-                    type="number"
-                    required={true}
-                    id="send-amount"
-                    placeholder={`Amount of ${ticker} to send`}
-                    disabled={sending}
-                    onChange={(e) => setAmount(e.target.valueAsNumber)}
-                    // avoid uncontrolled input errors
-                    // https://stackoverflow.com/a/64703656
-                    value={amount !== undefined ? amount : ''}
-                    step={1e-8}
-                    min={1e-8}
-                />
+            <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+                <fieldset>
+                    <label>Destination</label>
+                    <input
+                        placeholder={`Destination ${ticker} address`}
+                        {...register('destination', { required: 'Required Field' })}
+                    />
+                    <ErrorMessage as={<p />} errors={errors} name="destination" />
+                </fieldset>
+                <fieldset>
+                    <label>Amount</label>
+                    <input
+                        type="number"
+                        placeholder={`Amount of ${ticker} to send`}
+                        step={1e-8}
+                        min={1e-3}
+                        {...register('amount', {
+                            required: 'Required Field',
+                            min: { value: 0.001, message: 'Minimum amount is 0.001' },
+                        })}
+                    />
+                    <ErrorMessage as={<p />} errors={errors} name="amount" />
+                </fieldset>
                 <div className={`${classes.row} ${classes.reversed}`}>
-                    <button className={classes.button} disabled={sending} type="submit">
-                        {sending ? <img src="/loading.gif" alt="sending" /> : 'Send'}
+                    <button disabled={isSubmitting} type="submit">
+                        {isSubmitting ? <img src="/loading.gif" alt="Submitting" /> : 'Send'}
                     </button>
                     <button
-                        className={classes.button}
-                        disabled={sending}
+                        disabled={isSubmitting || !isDirty}
                         onClick={(e) => {
                             e.preventDefault();
-                            clear();
+                            reset();
                         }}
                     >
                         Clear
