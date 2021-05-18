@@ -1,6 +1,7 @@
 import React from 'react';
 import { IAddress } from '../../interfaces/IAddress';
 import { Copyable } from '../Copyable';
+import { TransactionHistory } from '../TransactionHistory';
 
 interface Props {
     addresses: IAddress[];
@@ -9,7 +10,7 @@ interface Props {
 export const Addresses: React.FC<Props> = ({ addresses }) => {
     return (
         <section>
-            {addresses.map(({ address, balance, pending }, index) => (
+            {addresses.map(({ address, balance, pending, coin }, index) => (
                 <div key={address}>
                     {index === 0 ? (
                         <h1>
@@ -32,6 +33,7 @@ export const Addresses: React.FC<Props> = ({ addresses }) => {
                         <span>Pending: </span>
                         <span>{pending}</span>
                     </div>
+                    <TransactionHistory address={address} ticker={coin} />
                 </div>
             ))}
         </section>

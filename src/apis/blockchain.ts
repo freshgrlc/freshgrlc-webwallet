@@ -21,9 +21,17 @@ export async function doBlockchainRequest(endpoint: string, method: HttpMethods,
     }
 }
 
-export async function get(endpoint: string) {
+export async function getBlockchain(endpoint: string) {
     return await doBlockchainRequest(endpoint, 'GET', undefined);
 }
-export async function post(endpoint: string, data: object | null) {
+export async function postBlockchain(endpoint: string, data: object | null) {
     return await doBlockchainRequest(endpoint, 'POST', data);
+}
+
+export async function addressMutations(ticker: string, address: string, start: number) {
+    const response = await getBlockchain(
+        `/${ticker.toLowerCase()}/address/${address}/mutations/?limit=10&start=${start}`
+    );
+
+    return await response.json();
 }
