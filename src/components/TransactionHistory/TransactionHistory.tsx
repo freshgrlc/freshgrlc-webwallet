@@ -1,18 +1,12 @@
 import React from 'react';
 import { useTransactionHistory } from '../../hooks/useTransactionHistory';
-import { CoinTicker } from '../../interfaces/IAddress';
 import { Loading } from '../Loading';
 import { Table, TableHeaderRow, TableRow } from '../Table';
 
 import classes from './TransactionHistory.module.scss';
 
-interface Props {
-    address: string;
-    ticker: CoinTicker;
-}
-
-export const TransactionHistory: React.FC<Props> = ({ address, ticker }) => {
-    const { currentPage, nextPage, decrementStart, incrementStart, start } = useTransactionHistory(ticker, address);
+export const TransactionHistory: React.FC = () => {
+    const { currentPage, nextPage, decrementStart, incrementStart, start } = useTransactionHistory();
 
     return (
         <section>

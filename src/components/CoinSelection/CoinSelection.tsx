@@ -1,23 +1,19 @@
 import React from 'react';
+import { useCoinContext } from '../../contexts/Coin.context';
 import { CoinTicker } from '../../interfaces/IAddress';
 
 interface Props {
-    selectedCoinTicker: CoinTicker;
-    setSelectedCoinTicker: React.Dispatch<React.SetStateAction<CoinTicker>>;
     tickers: CoinTicker[];
 }
 
-export const CoinSelection: React.FC<Props> = ({ selectedCoinTicker, setSelectedCoinTicker, tickers }) => {
+export const CoinSelection: React.FC<Props> = ({ tickers }) => {
+    const { ticker, setTicker } = useCoinContext();
     return (
         <section>
-            {tickers.map((ticker) => {
+            {tickers.map((e) => {
                 return (
-                    <button
-                        key={ticker}
-                        disabled={selectedCoinTicker === ticker}
-                        onClick={() => setSelectedCoinTicker(ticker)}
-                    >
-                        {ticker}
+                    <button key={e} disabled={e === ticker} onClick={() => setTicker(e)}>
+                        {e}
                     </button>
                 );
             })}

@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { send } from '../../apis/wallet';
+import { useCoinContext } from '../../contexts/Coin.context';
 import { useProtected } from '../../hooks/useProtected';
 
 import classes from './Send.module.scss';
 
-interface Props {
-    selectedCoinTicker: string;
-}
-
-export const Send: React.FC<Props> = ({ selectedCoinTicker }) => {
+export const Send: React.FC = () => {
     const [destination, setDestination] = useState('');
     const [amount, setAmount] = useState<number | undefined>(undefined);
     const [sending, setSending] = useState(false);
     const { token } = useProtected();
+    const { ticker } = useCoinContext();
 
     useEffect(() => {
         clear();
-    }, [selectedCoinTicker]);
+    }, [ticker]);
 
     const clear = () => {
         setDestination('');
@@ -28,14 +26,14 @@ export const Send: React.FC<Props> = ({ selectedCoinTicker }) => {
         if (amount === 0) {
             return;
         }
-        const confirmationMessage = `Please confirm you intend to send ${amount} ${selectedCoinTicker} to ${destination} it cannot be undone.`;
+        const confirmationMessage = `Please confirm you intend to send ${amount} ${ticker} to ${destination} it cannot be undone.`;
         if (window.confirm(confirmationMessage)) {
             setSending(true);
             // catch errors to make sure sending is always reset
             try {
                 // undefined override is fine here because field is marked as required on the form
                 // and this method is only called with the form
-                await send(destination, amount!, selectedCoinTicker, token);
+                await send(destination, amount!, ticker, token);
                 clear();
             } catch (error) {
                 console.error(error);
@@ -53,7 +51,7 @@ export const Send: React.FC<Props> = ({ selectedCoinTicker }) => {
                     type="text"
                     required={true}
                     id="send-destination"
-                    placeholder={`Destination ${selectedCoinTicker} address`}
+                    placeholder={`Destination ${ticker} address`}
                     disabled={sending}
                     onChange={(e) => setDestination(e.target.value)}
                     value={destination}
@@ -63,7 +61,7 @@ export const Send: React.FC<Props> = ({ selectedCoinTicker }) => {
                     type="number"
                     required={true}
                     id="send-amount"
-                    placeholder={`Amount of ${selectedCoinTicker} to send`}
+                    placeholder={`Amount of ${ticker} to send`}
                     disabled={sending}
                     onChange={(e) => setAmount(e.target.valueAsNumber)}
                     // avoid uncontrolled input errors

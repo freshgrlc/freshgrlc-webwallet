@@ -10,26 +10,27 @@ import { Table } from '../../components/Table';
 import { AutoPaymentHeaderRow, AutoPaymentInfoRow } from '../../components/AutoPayments';
 import { Send } from '../../components/Send';
 import { TransactionHistory } from '../../components/TransactionHistory';
+import { CoinContext } from '../../contexts/Coin.context';
 
 export const Main: React.FC = () => {
     const { data: info } = useWalletInfo();
-    const { selectedCoinTicker, setSelectedCoinTicker } = useSelectedCoinTicker();
+    const { selectedCoinTicker: ticker, setSelectedCoinTicker: setTicker } = useSelectedCoinTicker();
 
     if (!info) {
         return <Loading />;
     }
 
-    const addresses = info.addresses.filter((address) => address.coin === selectedCoinTicker);
+    const addresses = info.addresses.filter((address) => address.coin === ticker);
     const address = addresses[0];
-    const autoPayments = info.autopayments[selectedCoinTicker];
+    const autoPayments = info.autopayments[ticker];
 
     return (
-        <>
+        <CoinContext.Provider value={{ address, ticker, setTicker }}>
             <LogoutBanner></LogoutBanner>
-            <CoinSelection {...{ selectedCoinTicker, setSelectedCoinTicker, tickers: ['GRLC', 'tGRLC', 'TUX'] }} />
-            <Addresses address={address} />
-            <Send selectedCoinTicker={selectedCoinTicker} />
-            <TransactionHistory address={address.address} ticker={selectedCoinTicker} />
+            <CoinSelection tickers={['GRLC', 'tGRLC', 'TUX']} />
+            <Addresses />
+            <Send />
+            <TransactionHistory />
             {autoPayments.length > 0 && (
                 <Table>
                     <AutoPaymentHeaderRow />
@@ -41,6 +42,6 @@ export const Main: React.FC = () => {
                     ))}
                 </Table>
             )}
-        </>
+        </CoinContext.Provider>
     );
 };

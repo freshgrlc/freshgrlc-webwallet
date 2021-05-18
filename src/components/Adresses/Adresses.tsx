@@ -1,13 +1,10 @@
 import React from 'react';
-import { IAddress } from '../../interfaces/IAddress';
+import { useCoinContext } from '../../contexts/Coin.context';
 import { Copyable } from '../Copyable';
 
-interface Props {
-    address: IAddress;
-}
-
-export const Addresses: React.FC<Props> = ({ address: addressObject }) => {
-    const { address, balance, pending } = addressObject;
+export const Addresses: React.FC = () => {
+    const { address: addressObj } = useCoinContext();
+    const { address, balance, pending } = addressObj;
     return (
         <section>
             <div key={address}>
