@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { send } from '../../apis/wallet';
 import { useCoinContext } from '../../contexts/Coin.context';
 import { useProtected } from '../../hooks/useProtected';
+import { useTransactionHistory } from '../../hooks/useTransactionHistory';
 
 import classes from './Send.module.scss';
 
@@ -11,6 +12,7 @@ export const Send: React.FC = () => {
     const [sending, setSending] = useState(false);
     const { token } = useProtected();
     const { ticker } = useCoinContext();
+    const { currentPage, nextPage } = useTransactionHistory();
 
     useEffect(() => {
         clear();
@@ -34,6 +36,8 @@ export const Send: React.FC = () => {
                 // undefined override is fine here because field is marked as required on the form
                 // and this method is only called with the form
                 await send(destination, amount!, ticker, token);
+                currentPage.revalidate();
+                nextPage.revalidate();
                 clear();
             } catch (error) {
                 console.error(error);
