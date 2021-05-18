@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
-import useSWR from 'swr';
+import React from 'react';
+import { useTransactionHistory } from '../../hooks/useTransactionHistory';
 import { CoinTicker } from '../../interfaces/IAddress';
 import { Loading } from '../Loading';
-import { addressMutations } from '../../apis/blockchain';
-import { MutationList } from '../../interfaces/ITransaction';
 import { Table, TableHeaderRow, TableRow } from '../Table';
 
 import classes from './TransactionHistory.module.scss';
@@ -13,61 +11,41 @@ interface Props {
     ticker: CoinTicker;
 }
 
-function incrementStart(start: number) {
-    return start + 10;
-}
-
-function decrementStart(start: number) {
-    return start - 10;
-}
-
 export const TransactionHistory: React.FC<Props> = ({ address, ticker }) => {
-    const [start, setStart] = useState(0);
-    const { data, revalidate, isValidating } = useSWR<MutationList>(
-        [ticker, address, start, 'mutations'],
-        addressMutations
-    );
-    const { data: nextData, revalidate: nextRevalidate } = useSWR<MutationList>(
-        [ticker, address, incrementStart(start), 'mutations'],
-        addressMutations
-    );
+    const { currentPage, nextPage, decrementStart, incrementStart, start } = useTransactionHistory(ticker, address);
 
     return (
-        <>
-            <h3>Transaction History</h3>
+        <section>
+            <h2>Transaction History</h2>
             <Table>
                 <TableHeaderRow>
                     <div>TXID</div>
                     <div>Change</div>
                 </TableHeaderRow>
-                {data != null ? (
-                    data.map((mutation) => (
-                        <TableRow key={mutation.transaction.txid + mutation.change}>
-                            <div>{mutation.transaction.txid}</div>
-                            <div className={mutation.change >= 0 ? classes.green : classes.red}>
-                                {mutation.change.toFixed(8)}
-                            </div>
-                        </TableRow>
-                    ))
-                ) : (
-                    <Loading />
-                )}
+                {currentPage.data?.map((mutation) => (
+                    <TableRow key={mutation.transaction.txid + mutation.change}>
+                        <div>{mutation.transaction.txid}</div>
+                        <div className={mutation.change >= 0 ? classes.green : classes.red}>
+                            {mutation.change.toFixed(8)}
+                        </div>
+                    </TableRow>
+                )) ?? <Loading />}
             </Table>
-            <button disabled={start === 0} onClick={() => setStart(decrementStart)}>
+            <button disabled={start === 0} onClick={decrementStart}>
                 prev
             </button>
-            <button disabled={(nextData ?? []).length === 0} onClick={() => setStart(incrementStart)}>
+            <button disabled={(nextPage.data ?? []).length === 0} onClick={incrementStart}>
                 next
             </button>
             <button
-                disabled={isValidating}
+                disabled={currentPage.isValidating}
                 onClick={() => {
-                    revalidate();
-                    nextRevalidate();
+                    currentPage.revalidate();
+                    nextPage.revalidate();
                 }}
             >
                 refresh
             </button>
-        </>
+        </section>
     );
 };
