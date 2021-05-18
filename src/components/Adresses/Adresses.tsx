@@ -1,41 +1,28 @@
 import React from 'react';
 import { IAddress } from '../../interfaces/IAddress';
 import { Copyable } from '../Copyable';
-import { TransactionHistory } from '../TransactionHistory';
 
 interface Props {
-    addresses: IAddress[];
+    address: IAddress;
 }
 
-export const Addresses: React.FC<Props> = ({ addresses }) => {
+export const Addresses: React.FC<Props> = ({ address: addressObject }) => {
+    const { address, balance, pending } = addressObject;
     return (
         <section>
-            {addresses.map(({ address, balance, pending, coin }, index) => (
-                <div key={address}>
-                    {index === 0 ? (
-                        <h1>
-                            <Copyable text={address} />
-                        </h1>
-                    ) : (
-                        <>
-                            <hr />
-                            <h3>
-                                <span>Alternate Address: </span>
-                                <Copyable text={address} />
-                            </h3>
-                        </>
-                    )}
-                    <div>
-                        <span>Balance: </span>
-                        <span>{balance}</span>
-                    </div>
-                    <div>
-                        <span>Pending: </span>
-                        <span>{pending}</span>
-                    </div>
-                    <TransactionHistory address={address} ticker={coin} />
+            <div key={address}>
+                <h1>
+                    <Copyable text={address} />
+                </h1>
+                <div>
+                    <span>Balance: </span>
+                    <span>{balance}</span>
                 </div>
-            ))}
+                <div>
+                    <span>Pending: </span>
+                    <span>{pending}</span>
+                </div>
+            </div>
         </section>
     );
 };
