@@ -30,11 +30,11 @@ export const Send: React.FC<Props> = ({ selectedCoinTicker }) => {
         }
         const confirmationMessage = `Please confirm you intend to send ${amount} ${selectedCoinTicker} to ${destination} it cannot be undone.`;
         if (window.confirm(confirmationMessage)) {
-            // undefined override is fine here because field is marked as required on the form
-            // and this method is only called with the form
             setSending(true);
             // catch errors to make sure sending is always reset
             try {
+                // undefined override is fine here because field is marked as required on the form
+                // and this method is only called with the form
                 await send(destination, amount!, selectedCoinTicker, token);
                 clear();
             } catch (error) {
