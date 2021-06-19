@@ -1,71 +1,84 @@
-import { IWalletAPI, IWalletInfo } from '../interfaces/IWallet.interface';
-import endpoints from './endpoints';
+import { AuthenticationError } from '../errors/AuthenticationError';
+import { RequestError } from '../errors/RequestError';
+import { WalletInfoNotFoundError } from '../errors/WalletInfoNotFoundError';
+import { IWalletInfo } from '../interfaces/IWallet';
+import { webwallet } from './endpoints';
 
-class api implements IWalletAPI {
-    token: string;
-    headers: HeadersInit;
+function getHeaders(token: string) {
+    return {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+    };
+}
 
-    constructor (token: string) {
-        this.token = token;
-        this.headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-        };
-    }
-
-    private doRequest = (endpoint: string, method: string, data?: object | null) =>
-        fetch(endpoints.webwallet + endpoint, {
+export async function doRequest(endpoint: string, method: string, token: string, data?: object | null) {
+    try {
+        return await fetch(webwallet + endpoint, {
             method: method,
-            headers: this.headers,
-            body: data !== undefined ? JSON.stringify(data) : undefined
+            headers: getHeaders(token),
+            body: data !== undefined ? JSON.stringify(data) : undefined,
         });
+    } catch (error) {
+        // this is an abuse and kind of lies to swr later
+        throw new Error('Unhandeled fetch error: ' + error);
+    }
+}
 
-    private get = (endpoint: string) => 
-        this.doRequest(endpoint, 'GET', undefined);
+export async function get(endpoint: string, token: string) {
+    return await doRequest(endpoint, 'GET', token, undefined);
+}
+export async function post(endpoint: string, token: string, data: object | null) {
+    return await doRequest(endpoint, 'POST', token, data);
+}
 
-    private post = (endpoint: string, data: object | null) => 
-        this.doRequest(endpoint, 'POST', data);
+export async function create(token: string): Promise<IWalletInfo> {
+    const response = await post('/', token, null);
 
-    create = async (): Promise<IWalletInfo> => {
-        const response = await this.post('/', null);
+    if (response.status === 401) throw new AuthenticationError(response);
 
-        if (response.status === 401)
-            throw new Error('Not authenticated');
+    if (!response.ok) throw new RequestError(response);
 
-        if (!response.ok)
-            throw new Error('Request failed: ' + response.statusText);
+    return await response.json();
+}
 
-        return response.ok ? response.json() : undefined;
-    };
+export async function importPrivateKey(privateKey: string, token: string): Promise<IWalletInfo> {
+    const response = await post('/', token, {
+        privkey: privateKey,
+    });
 
-    importPrivateKey = async (privateKey: string): Promise<IWalletInfo> => {
-        const response = await this.post('/', {
-            'privkey': privateKey
-        });
+    if (response.status === 401) throw new AuthenticationError(response);
 
-        if (response.status === 401)
-            throw new Error('Not authenticated');
+    if (!response.ok) throw new RequestError(response);
 
-        if (!response.ok)
-            throw new Error('Request failed: ' + response.statusText);
+    return await response.json();
+}
 
-        return response.ok ? response.json() : undefined;
-    };
+export async function info(token: string): Promise<IWalletInfo> {
+    const response = await get('/', token);
 
-    info = async (): Promise<IWalletInfo | undefined> => {
-        const response = await this.get('/');
+    if (response.status === 401) throw new AuthenticationError(response);
 
-        if (response.status === 401)
-            throw new Error('Not authenticated');
+    if (response.status === 404) throw new WalletInfoNotFoundError(response);
 
-        if (response.status === 404)
-            return undefined;
+    if (!response.ok) throw new RequestError(response);
 
-        if (!response.ok)
-            throw new Error('Request failed: ' + response.statusText);
+    return await response.json();
+}
 
-        return response.json();
-    };
-};
+export async function send(destinaiton: string, amount: number, ticker: string, token: string) {
+    const response = await post('/send/', token, {
+        amount,
+        destination: {
+            address: destinaiton,
+            type: 'address',
+        },
+        coin: ticker,
+        priority: 'normal',
+    });
 
-export default api;
+    if (response.status === 401) throw new AuthenticationError(response);
+
+    if (!response.ok) throw new RequestError(response);
+
+    return await response.json();
+}

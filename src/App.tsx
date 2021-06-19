@@ -1,84 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { Suspense } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
-import { IWalletAPI, IWalletInfo } from './interfaces/IWallet.interface';
+import { TokenProvider } from './contexts/Token.context';
+import { Loading } from './components/Loading';
 
-import { AuthenticationToken } from './contexts/AuthenticationToken.context';
-import { Wallet } from './contexts/Wallet.context';
+function wrapComponent<T extends React.FC>(component: T) {
+    return { default: component };
+}
 
-import { Login, CreationPrompt, Main } from './pages';
-import { Loading, LogoutBanner } from './components';
+// note this has the downside of losing some type information at the the cost of being lazy when typing
+// pages DO NOT take props so this really shouldnt matter
+// if we need the type information just replace this with a hardcoded statement with pageName being part of the literal
+// and the module being indexed using the . operator
+function lazyPage(pageName: string) {
+    return React.lazy(() => import(`./pages/${pageName}`).then((module) => wrapComponent(module[pageName])));
+}
 
-import WalletAPI from './apis/wallet';
-
+const Login = lazyPage('Login');
+const CreationPrompt = lazyPage('CreationPrompt');
+const Main = lazyPage('Main');
 
 export const App: React.FC = () => {
-    const [ authToken, setAuthToken ] = useState<string | undefined>(() => {
-        const storedToken = localStorage.getItem('token');
-        return storedToken !== null ? storedToken : undefined;
-    });
-
-    const [ walletApi, setWalletApi ] = useState<IWalletAPI | undefined>();
-    const [ walletInfo, setWalletInfo ] = useState<IWalletInfo | undefined>();
-    const [ openingWallet, setWalletIsBeingOpened ] = useState<boolean>(false);
-
-    useEffect(() => {
-        authToken !== undefined ?
-            localStorage.setItem('token', authToken) :
-            localStorage.removeItem('token');
-    }, [ authToken ]);
-
-    useEffect(() => {
-        if (authToken !== undefined) {
-            const wallet = new WalletAPI(authToken);
-            setWalletApi(wallet);
-            setWalletInfo(undefined);
-
-            setWalletIsBeingOpened(true);
-            (async () => {
-                try {
-                    setWalletInfo(await wallet.info())
-                } catch {
-                    setAuthToken(undefined);
-                    setWalletApi(undefined);
-                }
-                setWalletIsBeingOpened(false);
-            })();
-        } else {
-            setWalletApi(undefined)
-            setWalletInfo(undefined);
-        }
-    }, [ authToken ]);
-
-    const createWallet = () => {
-        (async () => {
-            setWalletInfo(await walletApi?.create());
-        })();
-    };
-
-    const createWalletWithPrivateKey = (privateKey: string) => {
-        (async () => {
-            setWalletInfo(await walletApi?.importPrivateKey(privateKey));
-        })();
-    };
-
     return (
-        <AuthenticationToken.Provider value={{token: authToken, update: setAuthToken, clear: () => setAuthToken(undefined)}}>
-            <Wallet.Provider value={{api: walletApi, info: walletInfo, exists: () => walletInfo !== undefined, create: createWallet, import: createWalletWithPrivateKey}}>
-                {authToken === undefined ? (
-                    <Login />
-                ) : (
-                    <>
-                        <LogoutBanner />
-                        {openingWallet ? (
-                            <Loading />
-                        ) : walletInfo !== undefined ? (
-                            <Main />
-                        ) : (
+        <TokenProvider>
+            <Suspense fallback={<Loading />}>
+                <Router>
+                    <Switch>
+                        <Route path="/login">
+                            <Login />
+                        </Route>
+                        <Route path="/creationprompt">
                             <CreationPrompt />
-                        )}
-                    </>
-                )}
-            </Wallet.Provider>
-        </AuthenticationToken.Provider>
+                        </Route>
+                        <Route path="/">
+                            <Main />
+                        </Route>
+                    </Switch>
+                </Router>
+            </Suspense>
+        </TokenProvider>
     );
 };

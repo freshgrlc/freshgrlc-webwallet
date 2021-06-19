@@ -1,0 +1,10 @@
+.copyable {
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    vertical-align: center;
+}
+
+.copyable:active {
+    color: grey;
+}

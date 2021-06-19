@@ -2,19 +2,16 @@
     "name": "freshgrlc-webwallet",
     "version": "0.9.0",
     "private": true,
+    "node-sass": "^6.0.0",
     "dependencies": {
-        "@testing-library/jest-dom": "^5.11.4",
-        "@testing-library/react": "^11.1.0",
-        "@testing-library/user-event": "^12.1.10",
-        "@types/jest": "^26.0.15",
-        "@types/node": "^12.0.0",
-        "@types/react": "^17.0.0",
-        "@types/react-dom": "^17.0.0",
+        "@hookform/error-message": "^2.0.0",
         "crypto": "^1.0.1",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
+        "react-hook-form": "^7.6.0",
+        "react-router-dom": "^5.2.0",
         "react-scripts": "4.0.3",
-        "typescript": "^4.1.2",
+        "swr": "^0.5.6",
         "web-vitals": "^1.0.1"
     },
     "scripts": {
@@ -26,7 +23,8 @@
     "eslintConfig": {
         "extends": [
             "react-app",
-            "react-app/jest"
+            "react-app/jest",
+            "prettier"
         ]
     },
     "browserslist": {
@@ -42,8 +40,20 @@
         ]
     },
     "devDependencies": {
+        "@testing-library/dom": "^7.31.0",
+        "@testing-library/jest-dom": "^5.11.4",
+        "@testing-library/react": "^11.1.0",
+        "@testing-library/user-event": "^12.1.10",
+        "@types/jest": "^26.0.15",
+        "@types/node": "^12.0.0",
         "@types/node-sass": "^4.11.1",
+        "@types/react": "^17.0.0",
+        "@types/react-dom": "^17.0.0",
+        "@types/react-router-dom": "^5.1.7",
         "clsx": "^1.1.1",
-        "node-sass": "^5.0.0"
+        "eslint-config-prettier": "^8.3.0",
+        "node-sass": "^5.0.0",
+        "prettier": "^2.3.0",
+        "typescript": "^4.2.4"
     }
 }
